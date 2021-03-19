@@ -43,7 +43,7 @@ for subdir, dirs, files in os.walk(input_path):
             binance_ethbtc.sort_index(inplace=True)
 
             # reorder columns and filter
-            binance_ethbtc = binance_ethbtc[new_lob_order]
+            binance_ethbtc = binance_ethbtc[new_lob_order].dropna()
 
             # split by row
             total_rows = len(binance_ethbtc.index)

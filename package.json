@@ -1,0 +1,24 @@
+{
+  "name": "blsh-lob-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lob_live_test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/actuarialsnail/blsh-lob-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/actuarialsnail/blsh-lob-bot/issues"
+  },
+  "homepage": "https://github.com/actuarialsnail/blsh-lob-bot#readme",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^3.3.0",
+    "ccxt": "^1.43.24",
+    "node-binance-api": "^0.12.5"
+  }
+}
