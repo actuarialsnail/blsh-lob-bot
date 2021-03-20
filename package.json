@@ -19,6 +19,7 @@
   "dependencies": {
     "@tensorflow/tfjs-node": "^3.3.0",
     "ccxt": "^1.43.24",
+    "mathjs": "^9.3.0",
     "node-binance-api": "^0.12.5"
   }
 }

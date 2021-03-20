@@ -4,6 +4,8 @@ const Binance = require('node-binance-api');
 const ccxt = require('ccxt');
 const fs = require('fs');
 const tf = require('@tensorflow/tfjs-node');
+const { data } = require('@tensorflow/tfjs-node');
+const math = require('mathjs');
 
 const symbol = "ETH/BTC";
 let orderbook = {}
@@ -44,21 +46,32 @@ setInterval(async () => {
                 let asks_arr = Object.keys(orderbook[symbol].asks).map(x => [+x, orderbook[symbol].asks[x]]);
 
                 values.unshift({ bids: bids_arr, asks: asks_arr });
-                // log the raw file
-                // fs.appendFile('./logs/binance_orderbook_' + tmstmp_currentSysDate + '.json', JSON.stringify(values) + '\n', (err) => {
-                //     if (err) { console.log('error writing log files', err) }
-                // })
-                // log the processed file
+
                 const dataset = build_dataset(values);
-                // console.log(dataset);
-                // fs.appendFile('./logs/binance_dataset_' + tmstmp_currentSysDate + '_' + orderbook[symbol].lastUpdateId + '.csv', dataset.join(',') + '\n', (err) => {
-                //     if (err) { console.log('error writing log files', err) }
-                // })
-                // store in memory up to sample_num
-                cnn_dataset.push(dataset);
+
+                // get the size array from dataset row
+                let size_array = []
+                dataset.forEach((item, idx) => {
+                    if (idx > 2 && (idx + 1) % 2 == 0) size_array.push(item)
+                })
+                const dataset_mean = math.mean(size_array);
+                const dataset_std = math.std(size_array);
+
+                // normalize dataset row
+                let normalized_dataset = []
+                dataset.forEach((item, idx) => {
+                    if (idx > 2 && (idx + 1) % 2 == 0) {
+                        normalized_dataset.push((item - dataset_mean) / dataset_std)
+                    } else {
+                        normalized_dataset.push(item)
+                    }
+                })
+                // console.log(normalized_dataset);
+                cnn_dataset.push(normalized_dataset);
                 if (cnn_dataset.length > sample_num) {
                     cnn_dataset.shift();
                 }
+
                 if (cnn_dataset.length === sample_num) {
                     const tensor = tf.tensor4d(cnn_dataset_create(cnn_dataset));
                     // console.log(tensor.shape);
