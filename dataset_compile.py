@@ -45,15 +45,34 @@ for subdir, dirs, files in os.walk(input_path):
             # reorder columns and filter
             binance_ethbtc = binance_ethbtc[new_lob_order].dropna()
 
-            # split by row
-            total_rows = len(binance_ethbtc.index)
+            # normalize each row
+            df_array = binance_ethbtc.values
+            norm_df_array = []
+
+            for row in df_array:
+                # determine size_array
+                size_array = []
+                for idx, item in enumerate(row):
+                    if (idx > 1 and idx % 2 == 0):
+                        size_array.append(item)
+                size_mean = np.mean(size_array)
+                size_std = np.std(size_array)
+                # normalize size_array
+                norm_row = []
+                for idx, item in enumerate(row):
+                    if (idx > 1 and idx % 2 == 0):
+                        norm_row.append((item - size_mean)/size_std)
+                    else:
+                        norm_row.append(item)
+                norm_df_array.append(norm_row)
+
+            total_rows = len(norm_df_array)
             split_row = int(total_rows * train_pc/100)
-            print('shape:', binance_ethbtc.shape, ' split row:', split_row)
-            binance_ethbtc_train = binance_ethbtc.iloc[:split_row, :]
-            binance_ethbtc_validate = binance_ethbtc.iloc[split_row:, :]
+            print('shape:', len(norm_df_array), ' split row:', split_row)
+            np_norm_array = np.array(norm_df_array)
 
             # save data as npy
             np.save(output_path + '/train/' + filename +
-                    '.npy', binance_ethbtc_train.values)
+                    '.npy', np_norm_array[:split_row, :])
             np.save(output_path + '/validate/' + filename +
-                    '.npy', binance_ethbtc_validate.values)
+                    '.npy', np_norm_array[split_row:, :])
