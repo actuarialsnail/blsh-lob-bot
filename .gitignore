@@ -107,4 +107,5 @@ dist
 __pycache__
 datasets/train/*
 datasets/validate/*
-models/checkpoint/*
+models/checkpoint*
+lob-databot
