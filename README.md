@@ -5,3 +5,5 @@
 3. Predict categorical outcomes using the trained model in nodejs
 
 Idea came from this reference paper: https://arxiv.org/pdf/1808.03668
+
+Video documentation: https://www.youtube.com/playlist?list=PL0J7BStXb14aq4KcV5iC91cazGKN6RPvi
